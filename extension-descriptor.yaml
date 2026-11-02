@@ -1,0 +1,208 @@
+{
+  "schema_version": "extension_descriptor_v1",
+  "lifecycle": {
+    "data_schema_version": 1,
+    "data_migrations": []
+  },
+  "extension_id": "flowsteward.elasticsearch",
+  "release_version": "1.0.0",
+  "extension_type": "service_extension",
+  "identity": {
+    "display_name": "Elasticsearch",
+    "description": "Direct Elasticsearch document, vector and read-only Dataset operations.",
+    "tags": [
+      "elasticsearch",
+      "vector"
+    ]
+  },
+  "vendor": {
+    "vendor_name": "Flow Steward"
+  },
+  "listing": {
+    "visibility": "public_reference",
+    "category": "data"
+  },
+  "distribution": {
+    "channel": "private_byo",
+    "execution_modes": [
+      "local"
+    ],
+    "allows_self_hosted": true,
+    "requires_connected_control_plane": false,
+    "import_sources": [
+      "file"
+    ]
+  },
+  "runtime": {
+    "contract_version": "extension_host_v2",
+    "compatibility": {
+      "platform_min": "1.4.0"
+    },
+    "extension_contract_v2": {
+      "connection_types": "contracts/connection_types.yaml",
+      "operation_manifest": "contracts/operation_manifest.yaml",
+      "step_ui_manifest": "contracts/step_ui_manifest.yaml",
+      "dataset_connectors": [
+        {
+          "connector_id": "elasticsearch",
+          "connector_type_id": "elasticsearch",
+          "database_kind": "elasticsearch",
+          "display_name": "Elasticsearch",
+          "description": "Read-only explicit-index get and closed-DSL search.",
+          "source_kind": "elasticsearch",
+          "source_extension_id": "flowsteward.elasticsearch",
+          "source_extension_name": "Elasticsearch",
+          "source_provider": "Elasticsearch",
+          "query_language": "json",
+          "access_mode": "read_only",
+          "runtime_kind": "local_extension",
+          "runtime_adapter_ref": "main.py",
+          "connector_catalog": [
+            {
+              "source_kind": "elasticsearch",
+              "connector_type_id": "elasticsearch",
+              "display_name": "Elasticsearch",
+              "query_language": "json",
+              "preset_config": {}
+            }
+          ],
+          "connection_schema": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "origin",
+              "indices"
+            ],
+            "properties": {
+              "origin": {
+                "type": "string",
+                "title": "Elasticsearch origin"
+              },
+              "indices": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 32,
+                "items": {
+                  "type": "string"
+                },
+                "title": "Concrete allowed indices"
+              },
+              "request_timeout_seconds": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 30,
+                "default": 15
+              }
+            }
+          },
+          "secret_schema": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "api_key": {
+                "type": "string",
+                "title": "Api Key"
+              },
+              "username": {
+                "type": "string",
+                "title": "Username"
+              },
+              "password": {
+                "type": "string",
+                "title": "Password"
+              }
+            }
+          },
+          "capabilities": {
+            "read_only": true,
+            "test_connection": true,
+            "schema_introspection": true,
+            "validate_query": true,
+            "preview_query": true,
+            "execute_template": true,
+            "infer_output_schema": true,
+            "write_queries": false,
+            "row_preview": true
+          },
+          "safety_profile": {
+            "access_mode": "read_only",
+            "indexes_rows": false,
+            "executes_write_queries": false,
+            "requires_saved_template": true
+          },
+          "preview_support": true,
+          "schema_refresh_support": true
+        }
+      ],
+      "resource_query_manifest": [
+        {
+          "query_id": "runtime_health",
+          "cursor_mode": "none",
+          "description": "Elasticsearch runtime health.",
+          "required_scopes": [
+            "extension:invoke"
+          ],
+          "result_fields": [
+            "result.status",
+            "result.extension_id"
+          ],
+          "error_codes": [
+            "invalid_payload"
+          ]
+        },
+        {
+          "query_id": "supported_connectors",
+          "cursor_mode": "none",
+          "description": "Elasticsearch supported connectors.",
+          "required_scopes": [
+            "extension:invoke"
+          ],
+          "result_fields": [
+            "result.connectors"
+          ],
+          "error_codes": [
+            "invalid_payload"
+          ]
+        }
+      ]
+    }
+  },
+  "artifacts": {
+    "workflows": [
+      {
+        "workflow_id": "elasticsearch_ingest_chunk",
+        "ref": "artifacts/workflows/elasticsearch_ingest_chunk.yaml",
+        "publish": true
+      },
+      {
+        "workflow_id": "elasticsearch_update_document",
+        "ref": "artifacts/workflows/elasticsearch_update_document.yaml",
+        "publish": true
+      },
+      {
+        "workflow_id": "elasticsearch_delete_document",
+        "ref": "artifacts/workflows/elasticsearch_delete_document.yaml",
+        "publish": true
+      },
+      {
+        "workflow_id": "elasticsearch_ask",
+        "ref": "artifacts/workflows/elasticsearch_ask.yaml",
+        "publish": true
+      }
+    ],
+    "agents": [
+      {
+        "agent_id": "elasticsearch_grounded_answerer",
+        "ref": "artifacts/agents/elasticsearch_grounded_answerer.yaml",
+        "publish": true
+      }
+    ],
+    "skills": [
+      {
+        "skill_id": "elasticsearch_answer_from_sources",
+        "ref": "artifacts/skills/elasticsearch_answer_from_sources.yaml",
+        "publish": true
+      }
+    ]
+  }
+}

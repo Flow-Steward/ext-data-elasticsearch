@@ -1,0 +1,6 @@
+{
+  "page_id": "about",
+  "title": "Elasticsearch",
+  "description": "Direct Elasticsearch document, vector and read-only Dataset operations.",
+  "components": []
+}

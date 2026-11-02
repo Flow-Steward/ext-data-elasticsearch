@@ -1,0 +1,477 @@
+{
+  "actions": [
+    {
+      "action_id": "get_document",
+      "workflow_visible": true,
+      "title": "Get Document",
+      "description": "Get document.",
+      "required_scopes": [
+        "extension:invoke"
+      ],
+      "handler": {
+        "mode": "extension"
+      },
+      "parameters": [
+        {
+          "name": "connection_ref",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "index",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "document_id",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "source_fields",
+          "type": "array",
+          "required": true
+        }
+      ],
+      "result_fields": [
+        "result.documents",
+        "result.count",
+        "result.found",
+        "result.applied"
+      ],
+      "error_codes": [
+        "invalid_payload",
+        "invalid_connection",
+        "effect_claim_required",
+        "test_mode_suppressed",
+        "authentication_failed",
+        "provider_unavailable",
+        "invalid_provider_response",
+        "response_too_large",
+        "network_blocked",
+        "timeout",
+        "not_found",
+        "unsupported_vector_mapping"
+      ]
+    },
+    {
+      "action_id": "search",
+      "workflow_visible": true,
+      "title": "Search",
+      "description": "Search.",
+      "required_scopes": [
+        "extension:invoke"
+      ],
+      "handler": {
+        "mode": "extension"
+      },
+      "parameters": [
+        {
+          "name": "connection_ref",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "index",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "query",
+          "type": "object",
+          "required": false
+        },
+        {
+          "name": "source_fields",
+          "type": "array",
+          "required": true
+        },
+        {
+          "name": "sort",
+          "type": "array",
+          "required": false
+        },
+        {
+          "name": "size",
+          "type": "integer",
+          "required": false
+        }
+      ],
+      "result_fields": [
+        "result.documents",
+        "result.count",
+        "result.found",
+        "result.applied"
+      ],
+      "error_codes": [
+        "invalid_payload",
+        "invalid_connection",
+        "effect_claim_required",
+        "test_mode_suppressed",
+        "authentication_failed",
+        "provider_unavailable",
+        "invalid_provider_response",
+        "response_too_large",
+        "network_blocked",
+        "timeout",
+        "not_found",
+        "unsupported_vector_mapping"
+      ]
+    },
+    {
+      "action_id": "upsert_document",
+      "workflow_visible": true,
+      "title": "Upsert Document",
+      "description": "Upsert document.",
+      "required_scopes": [
+        "extension:invoke"
+      ],
+      "handler": {
+        "mode": "extension"
+      },
+      "parameters": [
+        {
+          "name": "connection_ref",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "index",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "document_id",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "document",
+          "type": "object",
+          "required": true
+        }
+      ],
+      "result_fields": [
+        "result.applied",
+        "result.document_id",
+        "result.result"
+      ],
+      "error_codes": [
+        "invalid_payload",
+        "invalid_connection",
+        "effect_claim_required",
+        "test_mode_suppressed",
+        "authentication_failed",
+        "provider_unavailable",
+        "invalid_provider_response",
+        "response_too_large",
+        "network_blocked",
+        "timeout",
+        "not_found",
+        "unsupported_vector_mapping"
+      ]
+    },
+    {
+      "action_id": "update_document",
+      "workflow_visible": true,
+      "title": "Update Document",
+      "description": "Update document.",
+      "required_scopes": [
+        "extension:invoke"
+      ],
+      "handler": {
+        "mode": "extension"
+      },
+      "parameters": [
+        {
+          "name": "connection_ref",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "index",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "document_id",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "doc",
+          "type": "object",
+          "required": true
+        },
+        {
+          "name": "doc_as_upsert",
+          "type": "boolean",
+          "required": false
+        }
+      ],
+      "result_fields": [
+        "result.applied",
+        "result.document_id",
+        "result.result"
+      ],
+      "error_codes": [
+        "invalid_payload",
+        "invalid_connection",
+        "effect_claim_required",
+        "test_mode_suppressed",
+        "authentication_failed",
+        "provider_unavailable",
+        "invalid_provider_response",
+        "response_too_large",
+        "network_blocked",
+        "timeout",
+        "not_found",
+        "unsupported_vector_mapping"
+      ]
+    },
+    {
+      "action_id": "delete_document",
+      "workflow_visible": true,
+      "title": "Delete Document",
+      "description": "Delete document.",
+      "required_scopes": [
+        "extension:invoke"
+      ],
+      "handler": {
+        "mode": "extension"
+      },
+      "parameters": [
+        {
+          "name": "connection_ref",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "index",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "document_id",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "result_fields": [
+        "result.applied",
+        "result.document_id",
+        "result.result"
+      ],
+      "error_codes": [
+        "invalid_payload",
+        "invalid_connection",
+        "effect_claim_required",
+        "test_mode_suppressed",
+        "authentication_failed",
+        "provider_unavailable",
+        "invalid_provider_response",
+        "response_too_large",
+        "network_blocked",
+        "timeout",
+        "not_found",
+        "unsupported_vector_mapping"
+      ]
+    },
+    {
+      "action_id": "knn_search",
+      "workflow_visible": true,
+      "title": "Knn Search",
+      "description": "Knn search.",
+      "required_scopes": [
+        "extension:invoke"
+      ],
+      "handler": {
+        "mode": "extension"
+      },
+      "parameters": [
+        {
+          "name": "connection_ref",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "index",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "field",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "query_vector",
+          "type": "array",
+          "required": true
+        },
+        {
+          "name": "k",
+          "type": "integer",
+          "required": false
+        },
+        {
+          "name": "num_candidates",
+          "type": "integer",
+          "required": false
+        },
+        {
+          "name": "filter",
+          "type": "object",
+          "required": false
+        },
+        {
+          "name": "source_fields",
+          "type": "array",
+          "required": true
+        }
+      ],
+      "result_fields": [
+        "result.documents",
+        "result.count",
+        "result.found",
+        "result.applied"
+      ],
+      "error_codes": [
+        "invalid_payload",
+        "invalid_connection",
+        "effect_claim_required",
+        "test_mode_suppressed",
+        "authentication_failed",
+        "provider_unavailable",
+        "invalid_provider_response",
+        "response_too_large",
+        "network_blocked",
+        "timeout",
+        "not_found",
+        "unsupported_vector_mapping"
+      ]
+    },
+    {
+      "action_id": "prepare_chunk",
+      "workflow_visible": true,
+      "title": "Prepare Chunk",
+      "description": "Prepare Chunk.",
+      "required_scopes": [
+        "extension:invoke"
+      ],
+      "handler": {
+        "mode": "extension"
+      },
+      "parameters": [
+        {
+          "name": "document_id",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "chunk_id",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "source_uri",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "vector",
+          "type": "array",
+          "required": true
+        }
+      ],
+      "result_fields": [
+        "result.document_id",
+        "result.document"
+      ],
+      "error_codes": [
+        "invalid_payload"
+      ]
+    },
+    {
+      "action_id": "prepare_sources",
+      "workflow_visible": true,
+      "title": "Prepare Sources",
+      "description": "Prepare Sources.",
+      "required_scopes": [
+        "extension:invoke"
+      ],
+      "handler": {
+        "mode": "extension"
+      },
+      "parameters": [
+        {
+          "name": "documents",
+          "type": "array",
+          "required": true
+        }
+      ],
+      "result_fields": [
+        "result.sources",
+        "result.context",
+        "result.answerable"
+      ],
+      "error_codes": [
+        "invalid_payload"
+      ]
+    },
+    {
+      "action_id": "finalize_answer",
+      "workflow_visible": true,
+      "title": "Finalize Answer",
+      "description": "Finalize Answer.",
+      "required_scopes": [
+        "extension:invoke"
+      ],
+      "handler": {
+        "mode": "extension"
+      },
+      "parameters": [
+        {
+          "name": "answer",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "cited_source_ids",
+          "type": "array",
+          "required": true
+        },
+        {
+          "name": "sources",
+          "type": "array",
+          "required": true
+        },
+        {
+          "name": "abstained",
+          "type": "boolean",
+          "required": false
+        }
+      ],
+      "result_fields": [
+        "result.answer",
+        "result.sources",
+        "result.grounded",
+        "result.abstained",
+        "result.citation_count"
+      ],
+      "error_codes": [
+        "invalid_payload"
+      ]
+    }
+  ]
+}
