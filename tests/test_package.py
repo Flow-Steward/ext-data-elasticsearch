@@ -30,6 +30,26 @@ def test_deterministic_architecture_labelled_archives(tmp_path):
                 "runtime_target": target
             }
             assert sum(i.file_size for i in archive.infolist()) <= 150 * 1024 * 1024
+            # Public catalog discovery consumes extension.yaml, not the descriptor.
+            manifest = json.loads(archive.read("flowsteward_elasticsearch/extension.yaml"))
+            descriptor = json.loads(
+                archive.read("flowsteward_elasticsearch/extension-descriptor.yaml")
+            )
+            assert "dataset_connector" in manifest["features"]
+            public_contract = manifest["runtime"]["extension_contract_v2"]
+            native_contract = descriptor["runtime"]["extension_contract_v2"]
+            assert public_contract["dataset_connectors"] == native_contract["dataset_connectors"]
+            assert (
+                public_contract["resource_query_manifest"]
+                == native_contract["resource_query_manifest"]
+            )
+            connector = public_contract["dataset_connectors"][0]
+            assert connector["connector_id"] == "elasticsearch"
+            assert connector["query_language"] == "json" and connector["access_mode"] == "read_only"
+            assert {q["query_id"] for q in public_contract["resource_query_manifest"]} == {
+                "runtime_health",
+                "supported_connectors",
+            }
             assert "flowsteward_elasticsearch/artifacts/workflows/elasticsearch_ask.yaml" in names
             assert not any(
                 "/.git/" in n or "/dev-wheels/" in n or "/dist/" in n or "/__pycache__/" in n

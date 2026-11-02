@@ -26,7 +26,8 @@
   "features": [
     "tool",
     "action",
-    "artifact_bundle"
+    "artifact_bundle",
+    "dataset_connector"
   ],
   "required_scopes": [
     "extension:invoke"
@@ -66,7 +67,130 @@
     "extension_contract_v2": {
       "connection_types": "contracts/connection_types.yaml",
       "operation_manifest": "contracts/operation_manifest.yaml",
-      "step_ui_manifest": "contracts/step_ui_manifest.yaml"
+      "step_ui_manifest": "contracts/step_ui_manifest.yaml",
+      "dataset_connectors": [
+        {
+          "connector_id": "elasticsearch",
+          "connector_type_id": "elasticsearch",
+          "database_kind": "elasticsearch",
+          "display_name": "Elasticsearch",
+          "description": "Read-only explicit-index get and closed-DSL search.",
+          "source_kind": "elasticsearch",
+          "source_extension_id": "flowsteward.elasticsearch",
+          "source_extension_name": "Elasticsearch",
+          "source_provider": "Elasticsearch",
+          "query_language": "json",
+          "access_mode": "read_only",
+          "runtime_kind": "local_extension",
+          "runtime_adapter_ref": "main.py",
+          "connector_catalog": [
+            {
+              "source_kind": "elasticsearch",
+              "connector_type_id": "elasticsearch",
+              "display_name": "Elasticsearch",
+              "query_language": "json",
+              "preset_config": {}
+            }
+          ],
+          "connection_schema": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "origin",
+              "indices"
+            ],
+            "properties": {
+              "origin": {
+                "type": "string",
+                "title": "Elasticsearch origin"
+              },
+              "indices": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 32,
+                "items": {
+                  "type": "string"
+                },
+                "title": "Concrete allowed indices"
+              },
+              "request_timeout_seconds": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 30,
+                "default": 15
+              }
+            }
+          },
+          "secret_schema": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "api_key": {
+                "type": "string",
+                "title": "Api Key"
+              },
+              "username": {
+                "type": "string",
+                "title": "Username"
+              },
+              "password": {
+                "type": "string",
+                "title": "Password"
+              }
+            }
+          },
+          "capabilities": {
+            "read_only": true,
+            "test_connection": true,
+            "schema_introspection": true,
+            "validate_query": true,
+            "preview_query": true,
+            "execute_template": true,
+            "infer_output_schema": true,
+            "write_queries": false,
+            "row_preview": true
+          },
+          "safety_profile": {
+            "access_mode": "read_only",
+            "indexes_rows": false,
+            "executes_write_queries": false,
+            "requires_saved_template": true
+          },
+          "preview_support": true,
+          "schema_refresh_support": true
+        }
+      ],
+      "resource_query_manifest": [
+        {
+          "query_id": "runtime_health",
+          "cursor_mode": "none",
+          "description": "Elasticsearch runtime health.",
+          "required_scopes": [
+            "extension:invoke"
+          ],
+          "result_fields": [
+            "result.status",
+            "result.extension_id"
+          ],
+          "error_codes": [
+            "invalid_payload"
+          ]
+        },
+        {
+          "query_id": "supported_connectors",
+          "cursor_mode": "none",
+          "description": "Elasticsearch supported connectors.",
+          "required_scopes": [
+            "extension:invoke"
+          ],
+          "result_fields": [
+            "result.connectors"
+          ],
+          "error_codes": [
+            "invalid_payload"
+          ]
+        }
+      ]
     }
   },
   "external_effects": [
