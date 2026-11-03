@@ -1,6 +1,6 @@
 # Elasticsearch for Flow Steward
 
-Direct Elasticsearch document CRUD, bounded search, dense-vector retrieval and native read-only JSON Datasets. No Kibana or MCP server is required. Extension `flowsteward.elasticsearch` 1.0.1 uses the host-provided `flowsteward-extension-sdk==0.4.0` and Python standard library; no server, SDK wheel or client megadriver is bundled. Linux AMD64 and ARM64 runtime targets have separate installer ZIPs. No triggers are declared.
+Direct Elasticsearch document CRUD, bounded search, dense-vector retrieval and native read-only JSON Datasets. No Kibana or MCP server is required. Extension `flowsteward.elasticsearch` 1.0.2 uses the host-provided `flowsteward-extension-sdk==0.4.0` and Python standard library; no server, SDK wheel or client megadriver is bundled. Linux AMD64 and ARM64 runtime targets have separate installer ZIPs. No triggers are declared.
 
 ## Connect
 
