@@ -1,6 +1,6 @@
 # Elasticsearch for Flow Steward
 
-Direct Elasticsearch document CRUD, bounded search, dense-vector retrieval and native read-only JSON Datasets. No Kibana or MCP server is required. Extension `flowsteward.elasticsearch` 1.0.2 uses the host-provided `flowsteward-extension-sdk==0.4.0` and Python standard library; no server, SDK wheel or client megadriver is bundled. Linux AMD64 and ARM64 runtime targets have separate installer ZIPs. No triggers are declared.
+Direct Elasticsearch document CRUD, bounded search, dense-vector retrieval and native read-only JSON Datasets. No Kibana or MCP server is required. Extension `flowsteward.elasticsearch` 1.0.3 uses the host-provided `flowsteward-extension-sdk==0.4.0` and Python standard library; no server, SDK wheel or client megadriver is bundled. Linux AMD64 and ARM64 runtime targets have separate installer ZIPs. No triggers are declared.
 
 ## Connect
 
@@ -99,3 +99,5 @@ python3 scripts/package_extension.py --runtime-target linux-arm64
 Each ZIP includes correct `.fs-package.yaml` target metadata and a pure Python payload, under the installer limits of 50 MiB compressed / 150 MiB extracted. `NOTICE` and `BRAND-ASSETS.md` identify the independent extension and the logo source.
 
 API references: [8.19 Index API](https://www.elastic.co/guide/en/elasticsearch/reference/8.19/docs-index_.html), [Update API](https://www.elastic.co/guide/en/elasticsearch/reference/8.19/docs-update.html), [Search API](https://www.elastic.co/guide/en/elasticsearch/reference/8.19/search-search.html), [kNN search](https://www.elastic.co/guide/en/elasticsearch/reference/8.19/knn-search.html), [dense vectors](https://www.elastic.co/guide/en/elasticsearch/reference/8.19/dense-vector.html), [Docker](https://www.elastic.co/guide/en/elasticsearch/reference/8.19/docker.html).
+
+Native structured Dataset queries require extension host contract **1.5.0** (planned in Core app0.9.10). Application and host-contract version numbers are independent. Update Core before installing this release. Dataset queries are reads; document writes remain guarded workflow actions.

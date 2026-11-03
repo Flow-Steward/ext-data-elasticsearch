@@ -115,3 +115,16 @@ def test_packaged_typed_dataset_query_dispatches_through_actual_core(tmp_path):
         check=False,
     )
     assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_native_dataset_requires_platform_1_5_in_both_descriptors():
+    minimums = {
+        filename: json.loads((Path(__file__).resolve().parents[1] / filename).read_text())[
+            "runtime"
+        ]["compatibility"]["platform_min"]
+        for filename in ("extension.yaml", "extension-descriptor.yaml")
+    }
+    assert minimums == {
+        "extension.yaml": "1.5.0",
+        "extension-descriptor.yaml": "1.5.0",
+    }
