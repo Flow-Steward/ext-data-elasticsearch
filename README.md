@@ -8,7 +8,7 @@ Create concrete indices and mappings before setup; this connector does not admin
 
 ## Runtime and operation requirements
 
-Direct Elasticsearch document CRUD, bounded search, dense-vector retrieval and native read-only JSON Datasets. No Kibana or MCP server is required. Extension `flowsteward.elasticsearch` 1.0.4 uses the host-provided `flowsteward-extension-sdk==0.4.0` and Python standard library; no server, SDK wheel or client megadriver is bundled. Linux AMD64 and ARM64 runtime targets have separate installer ZIPs. No triggers are declared.
+Direct Elasticsearch document CRUD, bounded search, dense-vector retrieval and native read-only JSON Datasets. No Kibana or MCP server is required. Extension `flowsteward.elasticsearch` 1.0.5 uses the host-provided `flowsteward-extension-sdk==0.4.0` and Python standard library; no server, SDK wheel or client megadriver is bundled. Linux AMD64 and ARM64 runtime targets have separate installer ZIPs. No triggers are declared.
 
 ## Connect
 
@@ -109,3 +109,33 @@ Each ZIP includes correct `.fs-package.yaml` target metadata and a pure Python p
 API references: [8.19 Index API](https://www.elastic.co/guide/en/elasticsearch/reference/8.19/docs-index_.html), [Update API](https://www.elastic.co/guide/en/elasticsearch/reference/8.19/docs-update.html), [Search API](https://www.elastic.co/guide/en/elasticsearch/reference/8.19/search-search.html), [kNN search](https://www.elastic.co/guide/en/elasticsearch/reference/8.19/knn-search.html), [dense vectors](https://www.elastic.co/guide/en/elasticsearch/reference/8.19/dense-vector.html), [Docker](https://www.elastic.co/guide/en/elasticsearch/reference/8.19/docker.html).
 
 Native structured Dataset queries require extension host contract **1.5.0** (planned in Core app0.9.10). Application and host-contract version numbers are independent. Update Core before installing this release. Dataset queries are reads; document writes remain guarded workflow actions.
+
+## Automated CI and releases
+
+Pushes to `main` and pull requests run the shared extension build workflow. The checked-in `.github/release-config.json` selects both Linux targets, the repository's package script and test inputs. Missing native payloads and published-only inventory are restored from checksum-pinned release archives; tracked source files are preserved. The source packager retains its provenance checks.
+
+After the versioned release commit is on `main`, publish by pushing its version tag:
+
+```sh
+git tag v1.0.5
+git push origin v1.0.5
+```
+
+The release workflow runs the shared checks, builds the target archives and publishes the GitHub release and checksums. Do not move an existing tag. To rerun a release for an existing tag, dispatch the same workflow:
+
+```sh
+gh workflow run release.yml --repo Flow-Steward/ext-data-elasticsearch --ref main -f tag=v1.0.5
+```
+
+The manifest, descriptor (when present), package version and tag must identify the same release. Release publication uses the workflow token; no additional repository secret is required by these callers.
+
+### Standalone CI coverage
+
+The release recipe lists the standalone test files and individual test nodes explicitly, including package, source and provenance contracts. The shared runner clears repository pytest addopts so packaged contract checks are not silently deselected. This scope does not claim live provider or database verification.
+
+The following integration coverage requires a separate environment and is not part of standalone CI:
+
+- `tests/test_live_elasticsearch.py`: Opt-in live provider/server test requires external credentials or a disposable service fixture.
+- `tests/test_package.py::test_packaged_typed_dataset_query_dispatches_through_actual_core`: Executes a Core validator/dispatcher with PYTHONPATH=/app and imports Core modules.
+- `tests/test_rag.py::test_insufficient_evidence_passes_core_output_contract_and_citation_bridge`: Executes a Core validator/dispatcher with PYTHONPATH=/app and imports Core modules.
+- `tests/test_workflows.py::test_core_workflow_import_and_runtime_contract`: Executes a Core validator/dispatcher with PYTHONPATH=/app and imports Core modules.
