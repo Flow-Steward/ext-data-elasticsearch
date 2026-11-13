@@ -1,5 +1,7 @@
 # Elasticsearch for Flow Steward
 
+See [Workflow action guide](docs/workflow-actions.md) for action selection, setup requirements and JSON field examples.
+
 Connect Elasticsearch to Flow Steward for document lookup, full-text retrieval and similarity search. Workflow actions get documents by ID, search selected source fields, create or replace documents, merge partial updates and delete individual IDs. Search supports text matches, exact terms, ranges and Boolean filters, with sorting. Dense-vector search uses your existing indexed vector field and returns neighbors with scores and selected document content.
 
 Read-only JSON Datasets provide mapping inspection, saved parameterized get/search queries, previews and output-schema inference within selected indices and fields. Included example workflows cover chunk ingestion, updates, deletion and answers with source citations. Supply your own document and question embeddings, and configure the project's answer model to compose a retrieval-and-answer workflow.
@@ -8,7 +10,7 @@ Create concrete indices and mappings before setup; this connector does not admin
 
 ## Runtime and operation requirements
 
-Direct Elasticsearch document CRUD, bounded search, dense-vector retrieval and native read-only JSON Datasets. No Kibana or MCP server is required. Extension `flowsteward.elasticsearch` 1.0.5 uses the host-provided `flowsteward-extension-sdk==0.4.0` and Python standard library; no server, SDK wheel or client megadriver is bundled. Linux AMD64 and ARM64 runtime targets have separate installer ZIPs. No triggers are declared.
+Direct Elasticsearch document CRUD, bounded search, dense-vector retrieval and native read-only JSON Datasets. No Kibana or MCP server is required. Extension `flowsteward.elasticsearch` 1.0.6 uses the host-provided `flowsteward-extension-sdk==0.4.0` and Python standard library; no server, SDK wheel or client megadriver is bundled. Linux AMD64 and ARM64 runtime targets have separate installer ZIPs. No triggers are declared.
 
 ## Connect
 
@@ -117,14 +119,14 @@ Pushes to `main` and pull requests run the shared extension build workflow. The 
 After the versioned release commit is on `main`, publish by pushing its version tag:
 
 ```sh
-git tag v1.0.5
-git push origin v1.0.5
+git tag v1.0.6
+git push origin v1.0.6
 ```
 
 The release workflow runs the shared checks, builds the target archives and publishes the GitHub release and checksums. Do not move an existing tag. To rerun a release for an existing tag, dispatch the same workflow:
 
 ```sh
-gh workflow run release.yml --repo Flow-Steward/ext-data-elasticsearch --ref main -f tag=v1.0.5
+gh workflow run release.yml --repo Flow-Steward/ext-data-elasticsearch --ref main -f tag=v1.0.6
 ```
 
 The manifest, descriptor (when present), package version and tag must identify the same release. Release publication uses the workflow token; no additional repository secret is required by these callers.
