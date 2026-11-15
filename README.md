@@ -10,7 +10,7 @@ Create concrete indices and mappings before setup; this connector does not admin
 
 ## Runtime and operation requirements
 
-Direct Elasticsearch document CRUD, bounded search, dense-vector retrieval and native read-only JSON Datasets. No Kibana or MCP server is required. Extension `flowsteward.elasticsearch` 1.0.6 uses the host-provided `flowsteward-extension-sdk==0.4.0` and Python standard library; no server, SDK wheel or client megadriver is bundled. Linux AMD64 and ARM64 runtime targets have separate installer ZIPs. No triggers are declared.
+Direct Elasticsearch document CRUD, bounded search, dense-vector retrieval and native read-only JSON Datasets. No Kibana or MCP server is required. Extension `flowsteward.elasticsearch` 1.0.7 uses the host-provided `flowsteward-extension-sdk==0.4.0` and Python standard library; no server, SDK wheel or client megadriver is bundled. Linux AMD64 and ARM64 runtime targets have separate installer ZIPs. No triggers are declared.
 
 ## Connect
 
@@ -119,14 +119,14 @@ Pushes to `main` and pull requests run the shared extension build workflow. The 
 After the versioned release commit is on `main`, publish by pushing its version tag:
 
 ```sh
-git tag v1.0.6
-git push origin v1.0.6
+git tag v1.0.7
+git push origin v1.0.7
 ```
 
 The release workflow runs the shared checks, builds the target archives and publishes the GitHub release and checksums. Do not move an existing tag. To rerun a release for an existing tag, dispatch the same workflow:
 
 ```sh
-gh workflow run release.yml --repo Flow-Steward/ext-data-elasticsearch --ref main -f tag=v1.0.6
+gh workflow run release.yml --repo Flow-Steward/ext-data-elasticsearch --ref main -f tag=v1.0.7
 ```
 
 The manifest, descriptor (when present), package version and tag must identify the same release. Release publication uses the workflow token; no additional repository secret is required by these callers.
