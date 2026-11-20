@@ -1,5 +1,7 @@
 """RAG source identity and citation consistency through host actions."""
 
+import json
+
 import main
 from test_runtime import envelope
 
@@ -57,14 +59,20 @@ def test_retrieval_grounded_answer_and_empty_abstention():
     ]
     r = local("prepare_sources", documents=docs)
     assert r["ok"], r
-    assert r["result"]["context"] == "[S1]\nEarth is round."
+    source = r["result"]["sources"][0]
+    token = source["citation_token"]
+    assert json.loads(r["result"]["context"]) == [
+        {"citation_token": token, "excerpt": "Earth is round."},
+    ]
     f = local(
         "finalize_answer",
-        answer="Round [S1]",
-        cited_source_ids=["S1"],
+        answer=f"Round [{token}]",
+        cited_source_ids=[token],
         sources=r["result"]["sources"],
     )
     assert f["ok"] and f["result"]["grounded"]
+    assert f["result"]["answer"] == "Round [S1]"
+    assert "citation_token" not in f["result"]["sources"][0]
     assert f["result"]["sources"][0]["source_uri"] == "https://example.org/manual"
     assert not local(
         "finalize_answer",
@@ -74,6 +82,33 @@ def test_retrieval_grounded_answer_and_empty_abstention():
     )["ok"]
     f = local("finalize_answer", answer="", cited_source_ids=[], sources=[])
     assert f["ok"] and f["result"]["abstained"]
+
+
+def test_excerpt_markers_are_text_and_tokens_are_fresh():
+    docs = [
+        {"source": {"text": 'Sample text mentioning "[S2]".'}},
+        {"source": {"text": "Separate reference."}},
+    ]
+    first = local("prepare_sources", documents=docs)["result"]
+    second = local("prepare_sources", documents=docs)["result"]
+    entries = json.loads(first["context"])
+    assert entries[0]["excerpt"] == docs[0]["source"]["text"]
+    assert [entry["citation_token"] for entry in entries] != [
+        source["citation_token"] for source in second["sources"]
+    ]
+    assert not local(
+        "finalize_answer", answer="Quoted [S2]", cited_source_ids=["S2"], sources=first["sources"]
+    )["ok"]
+
+
+def test_serialized_context_respects_budget_even_when_text_needs_escaping():
+    from citations import build_context
+
+    result = build_context([{"payload": {"text": 'Quoted "chapter".\n' * 10}}], max_characters=100)
+    entries = json.loads(result["context"])
+    assert len(result["context"]) <= 100
+    assert result["truncated"]
+    assert entries[0]["excerpt"] == result["sources"][0]["excerpt"]
 
 
 def test_insufficient_evidence_passes_core_output_contract_and_citation_bridge():

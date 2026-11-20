@@ -566,7 +566,7 @@
     {
       "operation_id": "prepare_sources",
       "display_name": "RAG: Build cited context from search results",
-      "description": "Turn retrieved documents into bounded excerpts labeled S1, S2 and so on for an answer model. Pass the context to the model and retain sources for citation validation; this step does not generate an answer.",
+      "description": "Turn retrieved documents into bounded JSON records with an opaque citation token for each source. Pass the context to the model and retain sources for citation validation; this step does not generate an answer.",
       "operation_kind": "action",
       "workflow_visible": true,
       "connection_type_ids": [],
@@ -609,7 +609,7 @@
     {
       "operation_id": "finalize_answer",
       "display_name": "RAG: Validate answer citation IDs",
-      "description": "Check that answer markers such as [S1] match the cited IDs and supplied sources. Returns a fixed abstention when no evidence exists; checks citation syntax, not whether the answer follows from the text.",
+      "description": "Check that each bracketed citation token comes from the current prepared sources and turn accepted tokens into numbered display labels. Returns a fixed abstention when no evidence exists; checks citation syntax, not whether the answer follows from the text.",
       "operation_kind": "action",
       "workflow_visible": true,
       "connection_type_ids": [],

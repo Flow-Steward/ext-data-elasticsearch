@@ -10,7 +10,7 @@ Create concrete indices and mappings before setup; this connector does not admin
 
 ## Runtime and operation requirements
 
-Direct Elasticsearch document CRUD, bounded search, dense-vector retrieval and native read-only JSON Datasets. No Kibana or MCP server is required. Extension `flowsteward.elasticsearch` 1.0.7 uses the host-provided `flowsteward-extension-sdk==0.4.0` and Python standard library; no server, SDK wheel or client megadriver is bundled. Linux AMD64 and ARM64 runtime targets have separate installer ZIPs. No triggers are declared.
+Direct Elasticsearch document CRUD, bounded search, dense-vector retrieval and native read-only JSON Datasets. No Kibana or MCP server is required. Extension `flowsteward.elasticsearch` 1.0.8 uses the host-provided `flowsteward-extension-sdk==0.4.0` and Python standard library; no server, SDK wheel or client megadriver is bundled. Linux AMD64 and ARM64 runtime targets have separate installer ZIPs. No triggers are declared.
 
 ## Connect
 
@@ -66,7 +66,7 @@ Import the four workflows and accompanying agent/skill from `extension-descripto
 
 1. Call **Elasticsearch ingest chunk** (`elasticsearch_ingest_chunk`) with `index:"knowledge-chunks"`, `document_id:"manual"`, `chunk_id:"intro"`, `text:"The example service listens on port 9200."`, `source_uri:"https://example.org/manual"`, `title:"Manual"` and `vector:[1,0,0]`. The local `prepare_chunk` computes a stable SHA-256 physical ID from the exact document/chunk identifiers and returns a document preserving those identifiers and source metadata; `upsert_document` writes it. Save the returned `physical_id` in your ingestion manifest.
 2. To replace a chunk, call the same ingestion workflow with the same document/chunk IDs, new text and a freshly supplied embedding; the physical ID stays stable. To change only metadata, call `elasticsearch_update_document` with the physical ID and `doc:{"title":"Updated manual"}`. Partial updates do not automatically recompute vectors.
-3. After Elasticsearch's refresh, call **Elasticsearch ask** (`elasticsearch_ask`) with `index:"knowledge-chunks"`, `question:"Which port does the example service use?"`, and `query_vector:[1,0,0]`. kNN projects stored document/chunk IDs, source URI/title/text and score. `prepare_sources` labels excerpts `[S1]`, etc.; the project model answers only from that context. Empty retrieval bypasses the model and abstains. The local finalizer requires answer markers to match the known cited-source IDs exactly.
+3. After Elasticsearch's refresh, call **Elasticsearch ask** (`elasticsearch_ask`) with `index:"knowledge-chunks"`, `question:"Which port does the example service use?"`, and `query_vector:[1,0,0]`. kNN projects stored document/chunk IDs, source URI/title/text and score. `prepare_sources` encodes the excerpts as JSON records with a fresh citation token on each record; the project model answers only from that context. Empty retrieval bypasses the model and abstains. The local finalizer accepts only the current citation tokens and displays them as numbered source labels.
 4. Call `elasticsearch_delete_document` with the saved physical ID. For a multi-chunk document, maintain the physical-ID manifest yourself and delete each removed/trailing chunk explicitly. No hidden scan or delete-by-query occurs. Whole-document replacement is therefore an explicit caller-managed lifecycle, not an atomic batch operation.
 
 Source text is untrusted data, never instructions. `grounded:true` means citation identifiers are internally consistent; semantic entailment still depends on the model and evidence. No real or paid model request is made by the deterministic extension integration tests.
@@ -119,14 +119,14 @@ Pushes to `main` and pull requests run the shared extension build workflow. The 
 After the versioned release commit is on `main`, publish by pushing its version tag:
 
 ```sh
-git tag v1.0.7
-git push origin v1.0.7
+git tag v1.0.8
+git push origin v1.0.8
 ```
 
 The release workflow runs the shared checks, builds the target archives and publishes the GitHub release and checksums. Do not move an existing tag. To rerun a release for an existing tag, dispatch the same workflow:
 
 ```sh
-gh workflow run release.yml --repo Flow-Steward/ext-data-elasticsearch --ref main -f tag=v1.0.7
+gh workflow run release.yml --repo Flow-Steward/ext-data-elasticsearch --ref main -f tag=v1.0.8
 ```
 
 The manifest, descriptor (when present), package version and tag must identify the same release. Release publication uses the workflow token; no additional repository secret is required by these callers.

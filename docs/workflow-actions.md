@@ -145,7 +145,7 @@ Build a document with text, source details and a supplied embedding, plus a stab
 
 ### RAG: Build cited context from search results (`prepare_sources`)
 
-Turn retrieved documents into bounded excerpts labeled S1, S2 and so on for an answer model. Pass the context to the model and retain sources for citation validation; this step does not generate an answer.
+Turn retrieved documents into bounded JSON records with an opaque citation token on each source. Pass the context to the model and retain sources for citation validation; this step does not generate an answer.
 
 ```json
 {
@@ -167,17 +167,18 @@ Turn retrieved documents into bounded excerpts labeled S1, S2 and so on for an a
 
 ### RAG: Validate answer citation IDs (`finalize_answer`)
 
-Check that answer markers such as [S1] match the cited IDs and supplied sources. Returns a fixed abstention when no evidence exists; checks citation syntax, not whether the answer follows from the text.
+Check that each bracketed token in the generated answer comes from the current prepared sources. The final answer displays those references as numbered labels such as [S1]. Empty retrieval yields a fixed abstention. Citation validation checks consistency without judging factual support.
 
 ```json
 {
-  "answer": "Refund requests are accepted within 30 days. [S1]",
+  "answer": "Refund requests are accepted within 30 days. [FSCITE_0123456789abcdef0123456789abcdef]",
   "cited_source_ids": [
-    "S1"
+    "FSCITE_0123456789abcdef0123456789abcdef"
   ],
   "sources": [
     {
       "source_id": "S1",
+      "citation_token": "FSCITE_0123456789abcdef0123456789abcdef",
       "text": "Refunds are accepted within 30 days.",
       "excerpt": "Refunds are accepted within 30 days."
     }
